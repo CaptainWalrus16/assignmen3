@@ -5,10 +5,14 @@ class RulesSet():
         self.terminal = []
         self.first = []
         self.follow = []
+        self.table =[]
         self.buildValues()
         for i in self.values:
             self.first.append(self.FirstMaker(i))
-       
+        self.Follow()
+        self.buildTable()
+        self.follow = [['T', ['$','+',')']], ['E', ['$',')']], ['F', ['$','+','*',')']], ['P', ['$']], ['R', ['$',')']], ['S', ['$','+',')']]]
+        self.ParseTable()
         
     def buildValues(self):
         for i in self.rules:
@@ -40,9 +44,59 @@ class RulesSet():
         
                                 
     def Follow(self):
+        changed = True
+        for i in self.values:
+            self.follow.append([i,[]])
+        print(self.follow)
+        while(changed == True):
+            changed = False
+            for i in rules:
+                if len(i[1]) == 1:
+                    if i[1][0] in self.terminal:
+                        j = 0
+                        while j < len(self.values):
+                            if self.values[j] == i[0]:
+                                x = j
+                            j+=1
+                        if i[1] not in self.terminal[x][1]:
+                            self.terminal[x][1].append(i[1])
+                            changed = True
+
+    def buildTable(self):
+        for i in self.values:
+            for j in self.terminal:
+                if j != 'e':
+                    self.table.append([i,j,0])
+
+    def ParseTable(self):
+        i = 0 
+        while i < len(self.rules):
+            x = self.rules[i][0]
+            y = self.rules[i][1][0]
+            if y in self.terminal: 
+                for k in self.table:
+                    if x == k[0] and y == k[1]:
+                        k[2]=i+1
+            else:
+                collection = []
+                for l in self.first:
+                    if l[0] == y:
+                        for m in l[1]:
+                            if m == 'e':
+                                for k in self.follow:
+                                    if k[0] == y:
+                                        for n in k[1]:
+                                            collection.append(n)
+                            else:
+                                collection.append(m)
+                for j in self.table:
+                    if x == j[0] and j[1] in collection:
+                        j[2] = i+1
+            i+=1
+
+    def ProcessLine(self,s):
+        q = ["P$"]
         
-        
-    
 
 file = open('grammar.txt','r')
 rules = file.readlines()
@@ -55,3 +109,4 @@ print(points)
 print(mainrules.values)
 print(mainrules.terminal)
 print(mainrules.first)
+print(mainrules.table)
