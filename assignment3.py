@@ -95,7 +95,26 @@ class RulesSet():
             i+=1
 
     def ProcessLine(self,s):
-        q = ["P$"]
+        q = "P$".split()
+        sentence = s.split()
+        while len(sentence)>0: 
+            if q[0] == s[0]:
+                q.pop(0)
+                s.pop(0)
+            else:
+                for i in self.table:
+                    if i[0] == q[0] and s[0] == i[1]:
+                        if i[2] == 0:
+                            raise Exception('Invalid Statement')
+                        x = i[2]-1
+
+                if rules[x][1] == 'e':
+                    q.pop(0)
+                else:
+                    q.pop(0)
+                    q.insert(0,rules[x][1])
+        print("You did it")
+
         
 
 file = open('grammar.txt','r')
@@ -110,3 +129,4 @@ print(mainrules.values)
 print(mainrules.terminal)
 print(mainrules.first)
 print(mainrules.table)
+mainrules.ProcessLine("i*i$")
